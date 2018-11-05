@@ -31,7 +31,7 @@ public class NetUntil {
         httpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.e("eeeeeee","请求失败");
+                Log.e("eeeeeeee","请求失败");
             }
 
             @Override
