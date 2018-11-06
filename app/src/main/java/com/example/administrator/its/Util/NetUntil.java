@@ -43,6 +43,7 @@ public class NetUntil {
                 while((str=reader.readLine())!=null){
                     result+=str;
                 }
+                Log.e("result",result);
                 Message message=handler.obtainMessage();
                 message.what=NET_GETDATA;
                 message.obj=result;

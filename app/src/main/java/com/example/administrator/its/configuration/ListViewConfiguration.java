@@ -33,5 +33,6 @@ public class ListViewConfiguration {
         fruitList.add(cherry);
         ListViewData aaa = new ListViewData("环境指标",R.mipmap.ic_launcher);
         fruitList.add(aaa);
+
     }
 }

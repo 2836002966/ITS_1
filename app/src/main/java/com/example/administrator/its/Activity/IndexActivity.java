@@ -1,16 +1,21 @@
 package com.example.administrator.its.Activity;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -18,7 +23,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.administrator.its.Adapter.HeadView;
 import com.example.administrator.its.Adapter.ListViewAdapter;
 import com.example.administrator.its.Fragment.AccountFragment;
 import com.example.administrator.its.Fragment.BusQueryFragment;
@@ -31,7 +35,12 @@ import com.example.administrator.its.Fragment.TrafficQueryFrament;
 import com.example.administrator.its.Fragment.TrafficViolationFrament;
 import com.example.administrator.its.R;
 import com.example.administrator.its.configuration.ListViewConfiguration;
+import com.example.administrator.its.entity.CarBalance;
 import com.example.administrator.its.entity.ListViewData;
+import com.example.administrator.its.service.BalanceService;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +50,9 @@ public class IndexActivity extends AppCompatActivity {
     private int num;
     private List<ListViewData> fruitList = new ArrayList<>();
     private  Fragment  currentFragment=new Fragment();
+    private IntentFilter intentFilter;
+    private LocalBroadcastManager broadcastManager;
+
     TextView textView;
     Button button;
     AccountFragment accountFragment = new AccountFragment();
@@ -52,18 +64,45 @@ public class IndexActivity extends AppCompatActivity {
     TrafficQueryFrament trafficQueryFrament = new TrafficQueryFrament();
     TrafficViolationFrament trafficViolationFrament = new TrafficViolationFrament();
     EnvironmentalFragment environmentalFragment = new EnvironmentalFragment();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_index);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        Intent intent=new Intent(this,BalanceService.class);
+        startService(intent);
+
+        intentFilter=new IntentFilter();
+        intentFilter.addAction("sendCar");
+        broadcastManager=LocalBroadcastManager.getInstance(this);
+
+        BroadcastReceiver broadcastReceiver=new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String data= intent.getStringExtra("CarInfo");
+                showNotifyOnlyText(data);
+            }
+        };
+
+        broadcastManager.registerReceiver(broadcastReceiver,intentFilter);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null){
             actionBar.hide();
         }
+        this.startService(new Intent(this,BalanceService.class));
+
         dj();
+
+
     }
+
+//    BroadcastReceiver broadcastReceiver=new BroadcastReceiver() {
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//            String info= intent.getStringExtra("CarInfo");
+//            Log.e("info",info);
+//        }
+//    };
 
     private void dj() {
         mDrawerLayout = findViewById(R.id.dl_left);
@@ -117,8 +156,10 @@ public class IndexActivity extends AppCompatActivity {
                         break;
                     case "环境指标":
                         switchFragment(environmentalFragment);
+
                         textView.setText("环境指标");
                         break;
+
                 }
             }
         });
@@ -153,5 +194,31 @@ public class IndexActivity extends AppCompatActivity {
                     .commit();
         }
         currentFragment = targetFragment;
+    }
+
+
+    private void showNotifyOnlyText(String data) {
+
+            Intent intent1 = new Intent(this,BalanceActivity.class);
+            PendingIntent pend = PendingIntent.getActivity(this, 0, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
+            CarBalance car=new CarBalance();
+            try {
+                String serverinfo=new JSONObject(data).getString("serverinfo");
+                JSONObject jsonObject =new JSONObject(serverinfo);
+
+                car.setBalance(jsonObject.getInt("Balance"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle("小车余额" )
+                .setContentText(car.getBalance()+"")
+                .setContentIntent(pend);
+
+
+            NotificationManager manager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+            manager.notify(1,builder.build());
+
     }
 }
