@@ -37,7 +37,7 @@ public class BalanceService extends Service{
     @Override
     public void onCreate() {
         super.onCreate();
-        ip= CacheUntil.getString(this,"url","192.168.1.108");
+        ip= CacheUntil.getString(this,"url","192.168.1.112");
         port=CacheUntil.getString(this,"port","8080");
         netUntil=new NetUntil();
 
@@ -54,7 +54,7 @@ public class BalanceService extends Service{
         public void handleMessage(Message msg) {
             switch (msg.what){
                 case 0:
-                netUntil.getData("{\"CarId\":1}","http://192.168.1.108:8080/transportservice/type/jason/action/GetCarAccountBalance.do",handler);
+                netUntil.getData("{\"CarId\":1}","http://192.168.1.112:8080/transportservice/type/jason/action/GetCarAccountBalance.do",handler);
                 sendEmptyMessageDelayed(0,5000);
                 break;
                 case NetUntil.NET_GETDATA:

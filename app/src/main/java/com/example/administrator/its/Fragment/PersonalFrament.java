@@ -18,7 +18,7 @@ public class PersonalFrament extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.personal, container, false);
+        View view= inflater.inflate(R.layout.personal,null);
         return view;
     }
 }

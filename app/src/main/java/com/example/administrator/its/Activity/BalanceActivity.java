@@ -6,6 +6,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
@@ -14,8 +15,10 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -67,6 +70,8 @@ public class BalanceActivity extends AppCompatActivity {
         back = findViewById(R.id.back_001);
         chongzhi = findViewById(R.id.chongzhi);
         et_chongzhi = findViewById(R.id.et_chongzhi);
+
+
     }
     private void showNotifyOnlyText(String data) {
 
@@ -102,14 +107,50 @@ public class BalanceActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     int i;
-                    i = Integer.getInteger(et_chongzhi.getText()+"");
-                    if (i >= 500){
+                    i=Integer.parseInt(et_chongzhi.getText().toString());
+                    if(i>500){
+                        AlertDialog.Builder builder = new AlertDialog.Builder(BalanceActivity.this);
+                        View contentView = LayoutInflater.from(BalanceActivity.this).inflate(R.layout.passwordlog, null);
+                        builder.setView(contentView);
+                       final EditText passwrod = contentView.findViewById(R.id.password001);
+                        builder.setPositiveButton("确定", new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which)
+                            {
+                                String str = passwrod.getText().toString().trim();
+                                if (str.equals("123456")){
+                                    ip= CacheUntil.getString(BalanceActivity.this,"url","192.168.1.112");
+                                    port=CacheUntil.getString(BalanceActivity.this,"port","8080");
+                                    netUntil=new NetUntil();
+                                    handler.sendEmptyMessage(0);
+                                }
 
+                            }
+                        });
+                        //    设置一个NegativeButton
+                        builder.setNegativeButton("取消", new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which)
+                            {
+                                Toast.makeText(BalanceActivity.this, "充值取消", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        final AlertDialog dialog = builder.create();
+
+                        dialog.show();
+                    }else if(i<500 || i>0) {
+                        ip= CacheUntil.getString(BalanceActivity.this,"url","192.168.1.112");
+                        port=CacheUntil.getString(BalanceActivity.this,"port","8080");
+                        netUntil=new NetUntil();
+                        handler.sendEmptyMessage(0);
                     }
-                    ip= CacheUntil.getString(BalanceActivity.this,"url","192.168.1.108");
+
+                    /*ip= CacheUntil.getString(BalanceActivity.this,"url","192.168.1.112");
                     port=CacheUntil.getString(BalanceActivity.this,"port","8080");
                     netUntil=new NetUntil();
-                    handler.sendEmptyMessage(0);
+                    handler.sendEmptyMessage(0);*/
                 }
             });
     }
@@ -118,7 +159,7 @@ public class BalanceActivity extends AppCompatActivity {
         public void handleMessage(Message msg) {
             switch (msg.what){
                 case 0:
-                    netUntil.getData("{\"CarId\":1,\"Money\" : "+et_chongzhi.getText()+"}","http://192.168.1.108:8080/transportservice/type/jason/action/SetCarAccountRecharge.do",handler);
+                    netUntil.getData("{\"CarId\":1,\"Money\" : "+et_chongzhi.getText()+"}","http://192.168.1.112:8080/transportservice/type/jason/action/SetCarAccountRecharge.do",handler);
                     break;
                 case NetUntil.NET_GETDATA:
                     Toast.makeText(BalanceActivity.this,"充值成功", Toast.LENGTH_SHORT).show();

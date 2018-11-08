@@ -52,7 +52,7 @@ public class IndexActivity extends AppCompatActivity {
     private  Fragment  currentFragment=new Fragment();
     private IntentFilter intentFilter;
     private LocalBroadcastManager broadcastManager;
-
+    private  FragmentTransaction transaction;
     TextView textView;
     Button button;
     AccountFragment accountFragment = new AccountFragment();
@@ -69,6 +69,7 @@ public class IndexActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_index);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        dj();
         Intent intent=new Intent(this,BalanceService.class);
         startService(intent);
 
@@ -91,7 +92,7 @@ public class IndexActivity extends AppCompatActivity {
         }
         this.startService(new Intent(this,BalanceService.class));
 
-        dj();
+
 
 
     }
@@ -118,48 +119,49 @@ public class IndexActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 ListViewData fruit = fruitList.get(i);
                 Toast.makeText(IndexActivity.this, fruit.getName(), Toast.LENGTH_SHORT).show();
+                transaction = getSupportFragmentManager()
+                        .beginTransaction();
                 switch (fruit.getName()) {
                     case "车辆账户管理":
-                        switchFragment(accountFragment);
                         textView.setText("车辆账户管理");
+                        transaction.replace(R.id.frame,accountFragment).commit();
                         break;
-                    case "公交查询":
-                       switchFragment(busQueryFragment);
-                        textView.setText("公交查询");
-                        break;
+
                     case "红绿灯管理":
-                        switchFragment(trafficLightFragment);
+
+                        transaction.replace(R.id.frame,trafficLightFragment).commit();
                         textView.setText("红绿灯管理");
                         break;
                     case "车辆违章":
-                        switchFragment(trafficViolationFrament);
+                        transaction.replace(R.id.frame,trafficViolationFrament).commit();
                         textView.setText("车辆违章");
                         break;
                     case "路况查询":
-                        switchFragment(trafficQueryFrament);
+                        transaction.replace(R.id.frame,trafficQueryFrament).commit();
                         textView.setText("路况查询");
                         break;
                     case "生活助手":
 
-                        switchFragment(lifeAssistantFrament);
+                        transaction.replace(R.id.frame,lifeAssistantFrament).commit();
                         textView.setText("生活助手");
                         break;
                     case "数据分析":
-
-                        switchFragment(dataAnalysisFrament);
+                        transaction.replace(R.id.frame,dataAnalysisFrament).commit();
                         textView.setText("数据分析");
                         break;
                     case "个人中心":
-
-                        switchFragment(personalFrament);
+                        transaction.replace(R.id.frame,personalFrament).commit();
                         textView.setText("个人中心");
                         break;
                     case "环境指标":
-                        switchFragment(environmentalFragment);
 
+                        transaction.replace(R.id.frame,environmentalFragment).commit();
                         textView.setText("环境指标");
                         break;
-
+                    case "公交查询":
+                        transaction.replace(R.id.frame,busQueryFragment).commit();
+                        textView.setText("公交查询");
+                        break;
                 }
             }
         });
@@ -179,22 +181,7 @@ public class IndexActivity extends AppCompatActivity {
 
 
 
-    private void switchFragment(Fragment targetFragment) {
-        FragmentTransaction transaction = getSupportFragmentManager()
-                .beginTransaction();
-        if (!targetFragment.isAdded()) {
-            transaction
-                    .hide(currentFragment)
-                    .add(R.id.frame, targetFragment)
-                    .commit();
-        } else {
-            transaction
-                    .hide(currentFragment)
-                    .show(targetFragment)
-                    .commit();
-        }
-        currentFragment = targetFragment;
-    }
+
 
 
     private void showNotifyOnlyText(String data) {

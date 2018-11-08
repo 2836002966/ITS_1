@@ -3,6 +3,7 @@ package com.example.administrator.its.Fragment;
 
 import android.annotation.SuppressLint;
 import android.app.DownloadManager;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -12,10 +13,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.administrator.its.Activity.BalanceActivity;
 import com.example.administrator.its.Adapter.EnvirAdapter;
 import com.example.administrator.its.R;
 import com.example.administrator.its.Util.CacheUntil;
@@ -49,7 +52,6 @@ public class EnvironmentalFragment extends Fragment {
     private TextView pm;
     private TextView status;
     private NetUntil netUntil;
-
     private final static int SEND_ENM=1;
     private final static int SEND_STATUS=2;
 
@@ -69,9 +71,8 @@ public class EnvironmentalFragment extends Fragment {
         co2 = view.findViewById(R.id.text_004);
         pm = view.findViewById(R.id.text_005);
         status = view.findViewById(R.id.text_006);
-
         envirAdapter=new EnvirAdapter(getContext(),bean);
-        ip= CacheUntil.getString(getContext(),"url","192.168.1.108");
+        ip= CacheUntil.getString(getContext(),"url","192.168.1.112");
         port=CacheUntil.getString(getContext(),"port","8080");
 
         netUntil=new NetUntil();
@@ -79,6 +80,8 @@ public class EnvironmentalFragment extends Fragment {
         Message message=handler.obtainMessage();
         message.what=0;
         handler.sendMessage(message);
+
+
 
         return view;
     }
@@ -88,7 +91,7 @@ public class EnvironmentalFragment extends Fragment {
         public void handleMessage(Message msg) {
             switch (msg.what){
                 case 0:
-                    netUntil.getData("{}","http://192.168.1.108:8080/transportservice/type/jason/action/GetAllSense.do",handler);
+                    netUntil.getData("{}","http://192.168.1.112:8080/transportservice/type/jason/action/GetAllSense.do",handler);
                     Message message= handler.obtainMessage();
                     message.what=0;
                     handler.sendMessageDelayed(message,5000);
@@ -124,7 +127,7 @@ public class EnvironmentalFragment extends Fragment {
                 bean.setTemperature(info.getInt("temperature"));
                 bean.setCo2(info.getInt("co2"));
                 bean.setPm(info.getInt("pm2.5"));
-                netUntil.getData("{\"RoadId\" : 1}","http://192.168.1.108:8080/transportservice/type/jason/action/GetRoadStatus.do",handler);
+                netUntil.getData("{\"RoadId\" : 1}","http://192.168.1.112:8080/transportservice/type/jason/action/GetRoadStatus.do",handler);
             }else{
                 bean.setStatus(info.getInt("Status"));
                 message.what=1;

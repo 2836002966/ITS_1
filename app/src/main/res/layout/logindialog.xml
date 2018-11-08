@@ -22,11 +22,13 @@
         android:orientation="horizontal"
         android:layout_gravity="center">
         <TextView
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="服务器地址:"
             android:textSize="25dp"/>
         <EditText
+            android:id="@+id/fuwuqi"
             android:layout_width="174dp"
             android:layout_height="match_parent"
             android:hint="192.168.1.101"
@@ -45,6 +47,7 @@
             android:text="端口号:"
             android:textSize="25dp"/>
         <EditText
+            android:id="@+id/duankou"
             android:layout_width="150dp"
             android:layout_height="match_parent"
             android:hint="8080"

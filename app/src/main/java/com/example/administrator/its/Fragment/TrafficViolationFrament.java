@@ -18,7 +18,7 @@ public class TrafficViolationFrament extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.trafficviolation, container, false);
+        View view= inflater.inflate(R.layout.trafficviolation,null);
         return view;
     }
 }
