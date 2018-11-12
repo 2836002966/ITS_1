@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="道路状态"
+        android:textSize="30dp"/>
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/chart006"
+        android:layout_width="match_parent"
+        android:layout_height="240dp" />
+</LinearLayout>

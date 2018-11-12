@@ -9,13 +9,23 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 
 public class DataClass extends SQLiteOpenHelper{
-    public DataClass(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, name, factory, version);
+    private static final String  NAME="its.db";
+    private static int version=1;
+    private String data = "create table data("+
+            "id INTEGER not null primary key autoincrement,"+
+            "temperature int,"+
+            "humidity int,"+
+            "lightIntensity int,"+
+            "co2 int,"+
+            "pm int,"+
+            "status int,"+
+            "time varchar(20))";
+    DataClass(Context context){
+        super(context, NAME, null, version);
     }
-
     @Override
-    public void onCreate(SQLiteDatabase sqLiteDatabase) {
-
+    public void onCreate(SQLiteDatabase db) {
+        db.execSQL(data);
     }
 
     @Override

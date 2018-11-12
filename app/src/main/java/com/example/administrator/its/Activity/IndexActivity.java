@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NotificationCompat;
@@ -16,6 +18,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -34,6 +37,7 @@ import com.example.administrator.its.Fragment.TrafficLightFragment;
 import com.example.administrator.its.Fragment.TrafficQueryFrament;
 import com.example.administrator.its.Fragment.TrafficViolationFrament;
 import com.example.administrator.its.R;
+import com.example.administrator.its.Util.CacheUntil;
 import com.example.administrator.its.configuration.ListViewConfiguration;
 import com.example.administrator.its.entity.CarBalance;
 import com.example.administrator.its.entity.ListViewData;
@@ -42,12 +46,15 @@ import com.example.administrator.its.service.BalanceService;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class IndexActivity extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
     private int num;
+    private TextView textView2;
     private List<ListViewData> fruitList = new ArrayList<>();
     private  Fragment  currentFragment=new Fragment();
     private IntentFilter intentFilter;
@@ -91,9 +98,7 @@ public class IndexActivity extends AppCompatActivity {
             actionBar.hide();
         }
         this.startService(new Intent(this,BalanceService.class));
-
-
-
+        getDate();
 
     }
 
@@ -207,5 +212,45 @@ public class IndexActivity extends AppCompatActivity {
             NotificationManager manager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
             manager.notify(1,builder.build());
 
+    }
+    private void getDate(){
+        textView2 = findViewById(R.id.ip_context);
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM/dd HH:mm-ss");// HH:mm:ss
+//获取当前时间
+        Date date = new Date(System.currentTimeMillis());
+        textView2.setText(CacheUntil.getString(this,"url","192.168.1.1")+" "+simpleDateFormat.format(date));
+    }
+
+    private static boolean isExit = false;
+
+    private static Handler mHandler = new Handler() {
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            isExit = false;
+        }
+    };
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            exit();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    private void exit() {
+        if (!isExit) {
+            isExit = true;
+            Toast.makeText(getApplicationContext(), "再按一次后退键退出程序",
+                    Toast.LENGTH_SHORT).show();
+            // 利用handler延迟发送更改状态信息
+            mHandler.sendEmptyMessageDelayed(0, 3000);
+        } else {
+
+
+            this.finish();
+        }
     }
 }

@@ -80,11 +80,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 break;
             case R.id.imageview_001:
                 AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
-                View contentView = LayoutInflater.from(LoginActivity.this).inflate(R.layout.passwordlog, null);
+                View contentView = LayoutInflater.from(LoginActivity.this).inflate(R.layout.logindialog, null);
                 final EditText edittext = contentView.findViewById(R.id.fuwuqi);
                 final EditText edittext1 = contentView.findViewById(R.id.duankou);
-                edittext1.setInputType( InputType.TYPE_CLASS_NUMBER);
-                edittext.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+
                 builder.setView(contentView);
                 builder.setPositiveButton("确定", new DialogInterface.OnClickListener()
                 {
@@ -93,6 +92,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     {
                         CacheUntil.putString(LoginActivity.this,"url",edittext.getText().toString());
                         CacheUntil.putString(LoginActivity.this,"port",edittext1.getText().toString());
+                        Toast.makeText(LoginActivity.this,"保存成功",Toast.LENGTH_SHORT).show();
                     }
                 });
                 //    设置一个NegativeButton

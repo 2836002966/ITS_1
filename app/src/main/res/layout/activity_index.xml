@@ -8,16 +8,24 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:gravity="right">
+        <TextView
+            android:id="@+id/ip_context"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="11111111111"
+            android:gravity="bottom"
+            />
+    </LinearLayout>
 
     <FrameLayout
         android:id="@+id/frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"></FrameLayout>
-    </LinearLayout>
     <include layout="@layout/custom_drawerlayout" />
     <com.example.administrator.its.Adapter.HeadView
         android:id="@+id/head1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"></com.example.administrator.its.Adapter.HeadView>
+
 </android.support.constraint.ConstraintLayout>
